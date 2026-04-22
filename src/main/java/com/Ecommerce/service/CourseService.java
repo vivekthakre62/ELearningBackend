@@ -59,23 +59,46 @@ public class CourseService {
      */
     @Cacheable(value = "ALL_COURSES")
     public List<Map<String, Object>> getAllCourses() {
-        List<Courses> courses = courseRepo.findAll();
-        return courses.stream().map(course -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", course.getId());
-            map.put("title", course.getTitle());
-            map.put("description", course.getDescription());
-            map.put("category", course.getCategory());
-            map.put("instructor", course.getInstructor());
-            map.put("duration", course.getDuration());
-            map.put("price", course.getPrice());
-            if (course.getData() != null && course.getFileType() != null) {
-                map.put("image", "data:" + course.getFileType() + ";base64," +
-                        Base64.getEncoder().encodeToString(course.getData()));
-            }
-            return map;
-        }).toList();
+        return mapCourses(courseRepo.findAll());
     }
+
+    public List<Map<String, Object>> getCoursesByCategory(String category) {
+        return getCourses(category, null);
+    }
+
+    public List<Map<String, Object>> getCourses(String category, String keyword) {
+        boolean noCategory = category == null || category.trim().isEmpty();
+        boolean noKeyword = keyword == null || keyword.trim().isEmpty();
+
+        if (noCategory && noKeyword) {
+            return getAllCourses();
+        }
+
+        return mapCourses(courseRepo.searchCourses(keyword, category));
+    }
+    
+    @Cacheable(value = "COURSE_BY_ID", key = "#courseId")
+    public Map<String, Object> getCourseById1(Long courseId) {
+        Courses course = courseRepo.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", course.getId());
+        map.put("title", course.getTitle());
+        map.put("description", course.getDescription());
+        map.put("category", course.getCategory());
+        map.put("instructor", course.getInstructor());
+        map.put("duration", course.getDuration());
+        map.put("price", course.getPrice());
+
+        if (course.getData() != null && course.getFileType() != null) {
+            map.put("image", "data:" + course.getFileType() + ";base64," +
+                    Base64.getEncoder().encodeToString(course.getData()));
+        }
+
+        return map;
+    }
+
 
     /**
      * Get a single course by ID – cache individual courses separately.
@@ -102,5 +125,23 @@ public class CourseService {
         existingCourse.setPrice(updatedCourseData.getPrice());
 
         return courseRepo.save(existingCourse);
+    }
+
+    private List<Map<String, Object>> mapCourses(List<Courses> courses) {
+        return courses.stream().map(course -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", course.getId());
+            map.put("title", course.getTitle());
+            map.put("description", course.getDescription());
+            map.put("category", course.getCategory());
+            map.put("instructor", course.getInstructor());
+            map.put("duration", course.getDuration());
+            map.put("price", course.getPrice());
+            if (course.getData() != null && course.getFileType() != null) {
+                map.put("image", "data:" + course.getFileType() + ";base64," +
+                        Base64.getEncoder().encodeToString(course.getData()));
+            }
+            return map;
+        }).toList();
     }
 }

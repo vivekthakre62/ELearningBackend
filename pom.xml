@@ -122,6 +122,7 @@
 	</dependencies>
 
 	<build>
+	<finalName>E-Learning</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

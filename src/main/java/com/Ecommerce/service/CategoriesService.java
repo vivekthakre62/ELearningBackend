@@ -31,8 +31,9 @@ public class CategoriesService {
     }
     // ✅ Optional: Delete a category and remove from cache
     @CacheEvict(value = { "categories", "categoriesList" }, allEntries = true)
-    public void deleteCategory(Long id) {
+    public String deleteCategory(Long id) {
         System.out.println("Deleting category and clearing cache...");
         categoriesRepo.deleteById(id);
+        return "Deleted";
     }
 }

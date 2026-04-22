@@ -25,6 +25,12 @@ public class User implements Serializable {
     private String phone;
     private String password;
     private String role;
+    private String profileImageName;
+    private String profileImageType;
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] profileImageData;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
    @JsonIgnore
@@ -70,6 +76,15 @@ public class User implements Serializable {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getProfileImageName() { return profileImageName; }
+    public void setProfileImageName(String profileImageName) { this.profileImageName = profileImageName; }
+
+    public String getProfileImageType() { return profileImageType; }
+    public void setProfileImageType(String profileImageType) { this.profileImageType = profileImageType; }
+
+    public byte[] getProfileImageData() { return profileImageData; }
+    public void setProfileImageData(byte[] profileImageData) { this.profileImageData = profileImageData; }
 
     public List<RegisterCourses> getRegistrations() { return registrations; }
     public void setRegistrations(List<RegisterCourses> registrations) { this.registrations = registrations; }
