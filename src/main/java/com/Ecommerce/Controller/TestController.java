@@ -8,7 +8,6 @@ import com.Ecommerce.entity.Test;
 import com.Ecommerce.service.TestService;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
 @RequestMapping("/api/test")
 public class TestController {
 

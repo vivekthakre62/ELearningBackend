@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/contents")
-@CrossOrigin("http://localhost:3000")
 public class ContentDownloadController {
 
-    private final String UPLOAD_DIR = "uploads"; // folder where files are stored
+    @Value("${app.upload.dir:uploads}")
+    private String uploadDir;
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String fileName) {
         try {
-            File file = Paths.get(UPLOAD_DIR).resolve(fileName).toFile();
+            File file = Paths.get(uploadDir).resolve(fileName).toFile();
 
             if (!file.exists()) {
                 return ResponseEntity.notFound().build();

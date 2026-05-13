@@ -4,20 +4,19 @@ public class ContentDTO {
     private Long id;
     private String fileName;
     private String fileType;
-    private String filePath; // server path (optional)
-    private String fileUrl;  // accessible URL for frontend
+    private String filePath;
+    private String fileUrl;
 
     public ContentDTO() {}
 
-    public ContentDTO(Long id, String fileName, String fileType, String filePath) {
+    public ContentDTO(Long id, String fileName, String fileType, String filePath, String fileUrl) {
         this.id = id;
         this.fileName = fileName;
         this.fileType = fileType;
         this.filePath = filePath;
-        this.fileUrl = "http://localhost:8080/api/files/download/" + fileName;
+        this.fileUrl = fileUrl;
     }
 
-    // getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -12,7 +12,6 @@ import com.Ecommerce.service.ContentService;
 
 @RestController
 @RequestMapping("/api/contents")
-@CrossOrigin("http://localhost:3000")
 public class ContentController {
 
     @Autowired

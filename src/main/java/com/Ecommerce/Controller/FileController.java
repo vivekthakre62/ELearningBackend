@@ -4,27 +4,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/files")
-@CrossOrigin("http://localhost:3000")
 public class FileController {
+
+    @Value("${app.upload.dir:uploads}")
+    private String uploadDir;
 
     @GetMapping("/download/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) throws IOException {
-
-        File file = new File("uploads/" + fileName); // use the folder where you store files
+        File file = new File(uploadDir, fileName);
         if (!file.exists()) {
             return ResponseEntity.notFound().build();
         }
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
-        // Determine MediaType
         MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
         if (fileName.endsWith(".pdf")) mediaType = MediaType.APPLICATION_PDF;
         else if (fileName.endsWith(".png")) mediaType = MediaType.IMAGE_PNG;
